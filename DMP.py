@@ -7,6 +7,7 @@ python3 DMP.py
 '''
 
 import math
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -21,7 +22,7 @@ class DMP:
         self.centers = np.linspace(0, 1, num_basis) # Basis function centers
         self.width = (0.65 * (1. / (num_basis - 1.)) ** 2) # Basis function widths
         self.duration = 3 # TODO: Load this from recording
-        self.dt = 0.003
+        self.dt = 0.1
 
     def learn_weights(self, filename):
         '''
@@ -74,7 +75,7 @@ class DMP:
         dmp_trajectory.append(pose_start.tolist())
 
         t = 0
-        for i in range(1500):
+        for i in range(50):
             t = t + self.dt
             if t < self.duration:
                 Phi = [math.exp(-0.5 * ((t/self.duration) - center) ** 2 / self.width) for center in self.centers]
@@ -108,31 +109,31 @@ if __name__ == "__main__":
 
     # Learn or load weights
     print('Learning weights')
-    DMP.learn_weights('curve.npz')
+    DMP.learn_weights(f'./recordings/{sys.argv[1]}.npz')
     # DMP.load_weights('DMPweights.npy')
     
     # Generate trajectory from start to goal
     print('Generating trajectory')
-    trajectory = DMP.generate_traj([0.258, 0.05, 0.26], [0.278, -0.0, 0.26])
+    trajectory = DMP.generate_traj([0.258, -0.1, 0.26], [0.258, 0.0, 0.26])
 
     plot_trajectory(trajectory)
-    # fig,axes = plt.subplots(3)
-    # axes[0].plot([trajectory[i][0] for i in range(len(trajectory))])
-    # axes[0].annotate(str(trajectory[0][0]),xy=(0, trajectory[0][0]))
-    # axes[0].annotate(str(trajectory[-1][0]),xy=(1000, trajectory[-1][0]))
-    # axes[0].set_ylabel('X(m)')
-
-    # axes[1].plot([trajectory[i][1] for i in range(len(trajectory))])
-    # axes[1].set_ylabel('Y(m)')
-    # axes[2].plot([trajectory[i][2] for i in range(len(trajectory))])
-    # axes[2].set_ylabel('Z(m)')
-
-    # plt.show()
+    # print(trajectory)
+    # previous = [0.,0.,0.]
+    # for position in trajectory:
+    #     print(np.linalg.norm(np.array(position) - np.array(previous)))
+    #     previous = position
 
     # Create robot and move arm according to trajectory
     robot = Robot('locobot')
     print('Moving')
     # TODO: set position directly in generate_traj?
+    previous = [0.,0.,0.]
     for position in trajectory:
-        robot.arm.set_ee_pose_pitch_roll(position, pitch=1.57, roll=0, plan=False)
+        # Move if displacement is significant
+        disp = np.linalg.norm(np.array(position) - np.array(previous))
+        if  disp > 2.5e-03:
+            robot.arm.set_ee_pose_pitch_roll(position, pitch=1.57, roll=0, plan=False, numerical=False)
+            previous = position
+        else:
+            print(f'Smol disp {disp}.')
         
