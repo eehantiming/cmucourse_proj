@@ -114,7 +114,7 @@ if __name__ == "__main__":
     
     # Generate trajectory from start to goal
     print('Generating trajectory')
-    trajectory = DMP.generate_traj([0.258, -0.1, 0.26], [0.258, 0.0, 0.26])
+    trajectory = DMP.generate_traj([0.22, 0.2, 0.26], [0.4, 0.1, 0.26])
 
     plot_trajectory(trajectory)
     # print(trajectory)
@@ -126,12 +126,14 @@ if __name__ == "__main__":
     # Create robot and move arm according to trajectory
     robot = Robot('locobot')
     print('Moving')
+    robot.arm.go_home()
     # TODO: set position directly in generate_traj?
     previous = [0.,0.,0.]
+    # TODO: Move out first to prevent hitting robot.
     for position in trajectory:
         # Move if displacement is significant
         disp = np.linalg.norm(np.array(position) - np.array(previous))
-        if  disp > 2.5e-03:
+        if disp > 2.5e-03:
             robot.arm.set_ee_pose_pitch_roll(position, pitch=1.57, roll=0, plan=False, numerical=False)
             previous = position
         else:

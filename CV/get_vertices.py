@@ -1,7 +1,9 @@
 # Python code to find the co-ordinates of
 # the contours detected in an image.
 import numpy as np
-import cv2
+# import cv2
+from pyrobot.utils.util import try_cv2_import
+cv2 = try_cv2_import()
 import matplotlib.pyplot as plt
 import argparse
 import glob
@@ -117,6 +119,7 @@ cv2.drawContours(canvass, [approx], 0, (0, 0, 0), 5)
 # Used to flatted the array containing
 # the co-ordinates of the vertices.
 n = approx.ravel() 
+print(n)
 i = 0
   
 for j in n :
