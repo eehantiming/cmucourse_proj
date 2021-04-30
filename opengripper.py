@@ -22,6 +22,15 @@ def move(position):
 
 def shift_left():
     robot.arm.move_ee_xyz(np.array([-0.5,0,0]))
+
+# Entry to move arm
+pos_var = tk.StringVar(value='0.3,0,0.3')
+pos_entry = tk.Entry(text='Desired pos',textvariable=pos_var)
+
+def moveto():
+    pos = f'[{pos_var.get()}]'
+    robot.arm.set_ee_pose_pitch_roll(json.loads(pos), pitch=1.57, roll=0, plan=True)
+
 # while True:
 #     command = input("Command (open, close, move, exit): ")
 #     if command.lower() == 'open':
@@ -75,12 +84,25 @@ left_button = tk.Button(
     command=shift_left
 )
 
-current_xyz = 
+move_button = tk.Button(
+    text="Left",
+    width=25,
+    height=5,
+    bg="black",
+    fg="white",
+    command=moveto
+)
 
-label = tk.Label(text=f"{current_xyz}")
 
+
+current_xyz = robot.arm.pose_ee[0]
+xyz_label = tk.Label(text=f"{current_xyz}")
+
+xyz_label.pack()
 open_button.pack()
 close_button.pack()
 left_button.pack()
+pos_entry.pack()
+move_button.pack()
 
 window.mainloop()
