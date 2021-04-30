@@ -41,16 +41,16 @@ elif args.video:
     print("ESC key to capture image")
 
     while(True):
-   	ret, frame = capture.read()
-    	grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        ret, frame = capture.read()
+        grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    	cv2.imshow('video gray', grayFrame)
-    	#cv2.imshow('video original', frame)
+        cv2.imshow('video gray', grayFrame)
+        #cv2.imshow('video original', frame)
 
 
-    	if cv2.waitKey(1) == 27:
+        if cv2.waitKey(1) == 27:
             print("Capturing Image")
-  	    imagePath = 'test_gray.jpg'
+            imagePath = 'test_gray.jpg'
             cv2.imwrite(imagePath, grayFrame)
             break
   
@@ -90,7 +90,7 @@ ret,thresh = cv2.threshold(edges, 110, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 #plt.show()
   
 # Detecting contours in image.
-image, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
 #count = 1
 
@@ -120,7 +120,7 @@ n = approx.ravel()
 i = 0
   
 for j in n :
-	if(i % 2 == 0):
+    if(i % 2 == 0):
             x = n[i]
             y = n[i + 1]
   
@@ -129,18 +129,18 @@ for j in n :
   
             if(i == 0):
                 # text on topmost co-ordinate.
-		print(string)
-		cv2.circle(canvass, (x,y), 10, (0,0,255))
+                print(string)
+                cv2.circle(canvass, (x,y), 10, (0,0,255))
                 cv2.putText(canvass, string, (x+10, y-20 ), 
                           font, 0.5, (255, 0, 0)) 
             else:
                 # text on remaining co-ordinates.
-		cv2.circle(canvass, (x,y), 10, (0,0,255))
+                cv2.circle(canvass, (x,y), 10, (0,0,255))
                 cv2.putText(canvass, string, (x+10, y-20), 
-                          font, 0.5, (255, 0, 0)) 
-		print(string)
-	
-        i = i + 1
+                                  font, 0.5, (255, 0, 0)) 
+                print(string)
+    
+    i = i + 1
     
 # Showing the contour images
 plt.figure(name)
