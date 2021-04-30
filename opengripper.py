@@ -24,8 +24,16 @@ def move(position):
     robot.arm.set_ee_pose_pitch_roll(position, pitch=1.57, roll=0, plan=True)
 
 def shift_left():
-    # TODO: this is not working now
-    robot.arm.move_ee_xyz(np.array((0,0.05,0)))
+
+    robot.arm.move_ee_xyz(np.array([-0.5,0,0]))
+
+# Entry to move arm
+pos_var = tk.StringVar(value='0.3,0,0.3')
+pos_entry = tk.Entry(text='Desired pos',textvariable=pos_var)
+
+def moveto():
+    pos = f'[{pos_var.get()}]'
+    robot.arm.set_ee_pose_pitch_roll(json.loads(pos), pitch=1.57, roll=0, plan=True)
 
 # Entry to move arm
 window = tk.Tk()
@@ -77,7 +85,6 @@ move_button = tk.Button(
     command=moveto
 )
 
-
 xyz_var = tk.StringVar()
 xyz_var = str(robot.arm.pose_ee[0])
 # current_xyz = robot.arm.pose_ee[0]
@@ -90,7 +97,9 @@ left_button.pack()
 pos_entry.pack()
 move_button.pack()
 
+
 window.mainloop()
+
 
 
 # while True:
