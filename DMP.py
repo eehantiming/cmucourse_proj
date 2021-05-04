@@ -114,7 +114,7 @@ if __name__ == "__main__":
     
     # Generate trajectory from start to goal
     print('Generating trajectory')
-    trajectory = DMP.generate_traj([0.22, 0.2, 0.26], [0.4, 0.1, 0.26])
+    trajectory = DMP.generate_traj([0.25, 0.1, 0.26], [0.35, 0., 0.26])
 
     plot_trajectory(trajectory)
     # print(trajectory)

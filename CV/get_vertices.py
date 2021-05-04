@@ -2,9 +2,9 @@
 # Python code to find the co-ordinates of
 # the contours detected in an image.
 import numpy as np
-import cv2
-# from pyrobot.utils.util import try_cv2_import
-# cv2 = try_cv2_import()
+# import cv2
+from pyrobot.utils.util import try_cv2_import
+cv2 = try_cv2_import()
 import matplotlib.pyplot as plt
 
 def auto_canny(image, sigma=0.33):
@@ -76,10 +76,10 @@ def get_vertices(imgFile):
         cv2.drawContours(canvass, [approx], 0, (0, 0, 0), 5)
 
         # X-axis and Y-axis min max boundary
-        lx = 0.2
-        rx = -0.2
-        ty = 0.4
-        by = 0.22
+        lx = 0.1
+        rx = -0.1
+        ty = 0.3
+        by = 0.25
 
         # create scale and shift factors
         dx = rx - lx
@@ -162,4 +162,4 @@ def get_vertices(imgFile):
         return pts
 
 if __name__ == "__main__":
-    points = get_vertices('house.jpg')
+    points = get_vertices('star.jpg')
