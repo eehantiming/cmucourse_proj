@@ -76,9 +76,9 @@ def get_vertices(imgFile):
         cv2.drawContours(canvass, [approx], 0, (0, 0, 0), 5)
 
         # X-axis and Y-axis min max boundary
-        lx = 0.1
-        rx = -0.1
-        ty = 0.3
+        lx = 0.13
+        rx = -0.13
+        ty = 0.40
         by = 0.25
 
         # create scale and shift factors
@@ -102,7 +102,7 @@ def get_vertices(imgFile):
                     # Calculate the shift and scaled x and y
                     ix = x -(w/2)
                     iy = h - y
-                    fx = round(ix/scaleX, 2)
+                    fx = round((lx+rx)/2 + ix/scaleX, 2)
                     fy = round((by + iy/scaleY), 2)
 
                     # String containing the co-ordinates.
@@ -138,8 +138,8 @@ def get_vertices(imgFile):
 
         plt.figure("Scaled")
         for pt in pts:
-          px.append(pt[0])
-          py.append(pt[1])
+          px.append(pt[1])
+          py.append(pt[0])
 
         # zip joins x and y coordinates in pairs
         for x1,y1 in zip(px,py):
@@ -162,4 +162,4 @@ def get_vertices(imgFile):
         return pts
 
 if __name__ == "__main__":
-    points = get_vertices('star.jpg')
+    points = get_vertices('house3.jpg')

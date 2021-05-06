@@ -3,7 +3,7 @@ Fits a DMP from EE xyz position velocity and acceleration.
 Generates trajectory for the learned skill.
 
 roslaunch locobot_control main.launch use_arm:=true torque_control:=false use_rviz:=false
-python3 DMP.py
+python3 DMP.py forward
 '''
 
 import math
@@ -50,8 +50,8 @@ class DMP:
         self.weights = np.matmul(np.matmul(np.linalg.inv(np.matmul(np.transpose(PHI),PHI)),np.transpose(PHI)), forcing_function)
 
         # Save the weights file to save relearning time
-        np.save('DMPweights.npy', self.weights)
-        print('Saved weights to DMPweights.npy!')
+        # np.save('DMPweights.npy', self.weights)
+        # print('Saved weights to DMPweights.npy!')
 
     def load_weights(self, filename):
         '''
@@ -114,19 +114,28 @@ if __name__ == "__main__":
     
     # Generate trajectory from start to goal
     print('Generating trajectory')
-    trajectory = DMP.generate_traj([0.25, 0.1, 0.26], [0.35, 0., 0.26])
+    #vertical
+    trajectory = DMP.generate_traj([0.25, 0., 0.26], [0.35, 0., 0.26])
+    # #hori
+    # trajectory2 = DMP.generate_traj([0.25, 0., 0.26], [0.25, 0.1, 0.26])
+    # #slanted
+    # trajectory3 = DMP.generate_traj([0.25, 0., 0.26], [0.35, 0.1, 0.26])
+    trajectory4 = DMP.generate_traj([0.25, 0.1, 0.26], [0.35, 0.1, 0.26])
+    trajectory5 = DMP.generate_traj([0.25, -0.1, 0.26], [0.35, -0.1, 0.26])
 
-    plot_trajectory(trajectory)
+    # plot_trajectory(trajectory)
+    # plot_trajectory(trajectory2)
+    # plot_trajectory(trajectory3)
+    plot_trajectory(trajectory4)
+    plot_trajectory(trajectory5)
     # print(trajectory)
-    # previous = [0.,0.,0.]
-    # for position in trajectory:
-    #     print(np.linalg.norm(np.array(position) - np.array(previous)))
-    #     previous = position
 
     # Create robot and move arm according to trajectory
     robot = Robot('locobot')
     print('Moving')
+    # Move to start position without touching paper
     robot.arm.go_home()
+    robot.arm.set_ee_pose_pitch_roll([0.25, 0., 0.35], pitch=1.57,roll=0, plan=False,numerical=False)
     # TODO: set position directly in generate_traj?
     previous = [0.,0.,0.]
     # TODO: Move out first to prevent hitting robot.
@@ -138,4 +147,82 @@ if __name__ == "__main__":
             previous = position
         else:
             print(f'Smol disp {disp}.')
-        
+    robot.arm.go_home()
+    
+    # # Traj 2 and 3
+    # robot.arm.set_ee_pose_pitch_roll([0.25, 0., 0.3], pitch=1.57,roll=0, plan=False,numerical=False)
+    # # TODO: set position directly in generate_traj?
+    # previous = [0.,0.,0.]
+    # # TODO: Move out first to prevent hitting robot.
+    # for position in trajectory2:
+    #     # Move if displacement is significant
+    #     disp = np.linalg.norm(np.array(position) - np.array(previous))
+    #     if disp > 2.5e-03:
+    #         robot.arm.set_ee_pose_pitch_roll(position, pitch=1.57, roll=0, plan=False, numerical=False)
+    #         previous = position
+    #     else:
+    #         print(f'Smol disp {disp}.')
+ 
+
+    # robot.arm.set_ee_pose_pitch_roll([0.25, 0., 0.3], pitch=1.57,roll=0, plan=False,numerical=False)
+    # # TODO: set position directly in generate_traj?
+    # previous = [0.,0.,0.]
+    # # TODO: Move out first to prevent hitting robot.
+    # for position in trajectory3:
+    #     # Move if displacement is significant
+    #     disp = np.linalg.norm(np.array(position) - np.array(previous))
+    #     if disp > 2.5e-03:
+    #         robot.arm.set_ee_pose_pitch_roll(position, pitch=1.57, roll=0, plan=False, numerical=False)
+    #         previous = position
+    #     else:
+    #         print(f'Smol disp {disp}.')
+    #     
+
+    # # plan True
+    # robot.arm.set_ee_pose_pitch_roll([0.25, 0., 0.3], pitch=1.57,roll=0, plan=False,numerical=False)
+    # # TODO: set position directly in generate_traj?
+    # previous = [0.,0.,0.]
+    # # TODO: Move out first to prevent hitting robot.
+    # for position in trajectory:
+    #     # Move if displacement is significant
+    #     disp = np.linalg.norm(np.array(position) - np.array(previous))
+    #     if disp > 2.5e-03:
+    #         robot.arm.set_ee_pose_pitch_roll(position, pitch=1.57, roll=0, plan=True, numerical=False)
+    #         previous = position
+    #     else:
+    #         print(f'Smol disp {disp}.')
+
+
+   # traj 4
+    robot.arm.set_ee_pose_pitch_roll([0.25, 0., 0.35], pitch=1.57,roll=0, plan=False,numerical=False)
+    # TODO: set position directly in generate_traj?
+    previous = [0.,0.,0.]
+    # TODO: Move out first to prevent hitting robot.
+    for position in trajectory4:
+        # Move if displacement is significant
+        disp = np.linalg.norm(np.array(position) - np.array(previous))
+        if disp > 2.5e-03:
+            robot.arm.set_ee_pose_pitch_roll(position, pitch=1.57, roll=0, plan=False, numerical=False)
+            previous = position
+        else:
+            print(f'Smol disp {disp}.')
+    robot.arm.go_home()
+
+    # traj 5
+    robot.arm.set_ee_pose_pitch_roll([0.25, 0., 0.35], pitch=1.57,roll=0, plan=False,numerical=False)
+    # TODO: set position directly in generate_traj?
+    previous = [0.,0.,0.]
+    # TODO: Move out first to prevent hitting robot.
+    for position in trajectory5:
+        # Move if displacement is significant
+        disp = np.linalg.norm(np.array(position) - np.array(previous))
+        if disp > 2.5e-03:
+            robot.arm.set_ee_pose_pitch_roll(position, pitch=1.57, roll=0, plan=False, numerical=False)
+            previous = position
+        else:
+            print(f'Smol disp {disp}.')
+
+
+
+    # lift up before ending
+    robot.arm.go_home()

@@ -17,6 +17,8 @@ points.append(points[0][:])
 print('Learning weights')
 DMP_straight = DMP(5)
 DMP_straight.learn_weights(f'./recordings/forward_filtered.npz')
+DMP_curve = DMP(5)
+DMP_curve.learn_weights(f'./recordings/curve.npz')
 
 # Initialize robot
 robot = Robot('locobot')
@@ -36,7 +38,11 @@ for i in range (1, len(points)):
     pre_pos[2] = DRAWING_HEIGHT + 0.1
     robot.arm.set_ee_pose_pitch_roll(pre_pos, pitch=1.57, roll=0, plan=False, numerical=False)
 
-    trajectory = DMP_straight.generate_traj(start, end)
+    # Use curve for first and last stroke, straight for the rest
+    if i == 1 or i == len(points):
+        trajectory = DMP_curve.generate_traj(start,end)
+    else:
+        trajectory = DMP_straight.generate_traj(start, end)
 
     previous = [0.,0.,0.] # TODO: check xyz for home position
     for position in trajectory:
