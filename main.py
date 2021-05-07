@@ -1,5 +1,11 @@
-import numpy as np
+'''
+Break down input image to points. Execute strokes with learned DMP.
 
+roslaunch locobot_control main.launch use_arm:=true torque_control:=false use_rviz:=false
+python3 main.py 
+'''
+
+import numpy as np
 from pyrobot import Robot
 
 from CV.get_vertices import get_vertices
@@ -23,14 +29,14 @@ robot = Robot('locobot')
 print('Moving')
 robot.arm.go_home()
 
-# Generate trajectory and draw each stroke
+# Generate trajectories and draw each stroke
 print('Generating trajectories')
 start = points[0]
 start.append(DRAWING_HEIGHT)
 for i in range (1, len(points)):
     end = points[i]
     end.append(DRAWING_HEIGHT)
-    print(start,end)
+    print('\tDrawing from {start} to {end}..')
     # start at a higher point
     pre_pos = start[:]
     pre_pos[2] = DRAWING_HEIGHT + 0.1
@@ -38,7 +44,7 @@ for i in range (1, len(points)):
 
     trajectory = DMP_straight.generate_traj(start, end)
 
-    previous = [0.,0.,0.] # TODO: check xyz for home position
+    previous = [0.,0.,0.] 
     for position in trajectory:
         # Move if displacement is significant
         disp = np.linalg.norm(np.array(position) - np.array(previous))
@@ -49,6 +55,7 @@ for i in range (1, len(points)):
             print(f'Smol disp {disp}.')
     # Use current point as the start for next stroke
     start = end
+    # Lift the arm before going to home
     robot.arm.set_ee_pose_pitch_roll(pre_pos, pitch=1.57, roll=0, plan=False, numerical=False)
     robot.arm.go_home()
 
