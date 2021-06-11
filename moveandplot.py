@@ -19,6 +19,71 @@ time.sleep(2)
 ee_pos = []
 Time=[]
 
+#position=np.array([0.418, 0.0, 0.15])
+#position1=np.array([-0.20, 0.0, 0.0])
+#orientation=np.array([[0.0,0.0,1.0],[0.0,1.0,0.0],[-1,0.0,0.0]])
+
+# start position
+#robot.arm.set_ee_pose_pitch_roll([0.418, 0., 0.20], pitch=1.57, roll=0, plan=True)
+#time.sleep(2)
+# robot.arm.set_ee_pose(position, orientation, plan=True, wait=True)
+# robot.arm.move_ee_xyz(position1, plan=False, numerical=False)
+# time.sleep(2)
+
+#ee_pos = []
+#Time=[]
+#start = time.time()
+#snooze = time.time()
+# position2=np.array([0.0, 0.15, 0.0])
+# time.sleep(2)
+# robot.arm.move_ee_xyz(position2, plan=False, numerical=False)
+
+
+config = dict(moveit_planner='ESTkConfigDefault')
+robot = Robot('locobot', arm_config=config)
+target_joints = [[0.408, 0.721, -0.471, -1.4, 0.920],
+				[0.388, 0.721, -0.471, -1.4, 0.920],
+				[0.368, 0.721, -0.471, -1.4, 0.920]	
+				]
+
+robot.arm.go_home()
+
+for joint in target_joints:
+	robot.arm.set_joint_positions(joint, plan=True)
+	time.sleep(2)
+
+robot.arm.go_home()	
+
+
+
+
+
+
+####for i in range(7):
+	# position2 = np.array([-0.02, 0, 0])
+	# robot.arm.move_ee_xyz(position2, plan=False, numerical=False)
+
+	# robot.arm.set_ee_pose_pitch_roll([0.418 - 0.02 * i, 0.0, 0.15], pitch=1.57, roll=0, plan=False, wait=False)
+	###position=np.array([0.418-0.02*i, 0.0, 0.15])
+	###orientation=np.array([[0.0,0.0,1.0],[0.0,1.0,0.0],[-1,0.0,0.0]])
+	###robot.arm.set_ee_pose(position, orientation, plan=False, wait=False)
+	# robot.arm.move_ee_xyz(position, plan=False, numerical=False)
+	###while time.time() - snooze < 2:
+		###elaptime = time.time() - start
+		###pos = robot.arm.pose_ee[0]
+		###Time.append(elaptime)
+		###ee_pos.append(pos)
+	###snooze = time.time()
+###fig,axes = plt.subplots(3)
+
+###axes[0].plot(Time, [ee_pos[i][0] for i in range(len(ee_pos))])
+###axes[1].plot(Time, [ee_pos[i][1] for i in range(len(ee_pos))])
+###axes[2].plot(Time, [ee_pos[i][2] for i in range(len(ee_pos))])
+###print(ee_pos[0], ee_pos[-1])
+
+###plt.show()
+
+
 # Parameters
 STEPS = 10
 TIME_BETWEEN_STEPS = 2
