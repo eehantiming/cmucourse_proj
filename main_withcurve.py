@@ -1,3 +1,7 @@
+'''
+Test script that replaces the first and last stroke with a curved skill.
+'''
+
 import numpy as np
 
 from pyrobot import Robot
